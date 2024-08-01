@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -9,30 +9,26 @@ import image from "../../assets/googlemeet.png"
 import { BsDownload, BsEye } from 'react-icons/bs';
 
 const Calendar = () => {
+
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [eventDetails, setEventDetails] = useState(null);
 
-  useEffect(() => {
-    const today = new Date();
-    fetchEventsForDateRange(today, today);
-  }, []);
 
   const fetchEventsForDateRange = async (start, end) => {
-    // const fromDate = start.toISOString().split('T')[0];
+    const fromDate = start.toISOString().split('T')[0];
     const toDate = end.toISOString().split('T')[0];
     try {
       const response = await axios.get('http://52.35.66.255:8000/calendar_app/api/calendar', {
         params: {
-          from_date: "2024-01-23",
+          from_date: fromDate,
           to_date: toDate,
         },
       });
       const data = response.data;
       setEvents(data.map(event => ({
         ...event,
-        start: new Date(event.start),
-        end: new Date(event.end),
+       
       })));
     } catch (error) {
       console.error('Error fetching events:', error);
@@ -51,7 +47,18 @@ const Calendar = () => {
       console.error('Error fetching event details:', error);
     }
   };
-
+  const renderEventContent = (event) => {
+    const res = event.event.extendedProps;
+    console.log(res, 'res');
+    return (
+      <div className='event_contain'>
+        <div className='event_label'>
+          <p> {res.job_id.jobRequest_Role}</p>
+          <p><strong>Interviewer:</strong> {res.user_det.handled_by.firstName} {res.user_det.handled_by.lastName}</p>
+        </div>
+      </div>
+    )
+  }
   const handleEventClick = (clickInfo) => {
     const eventId = clickInfo.event.id;
     setSelectedEvent(clickInfo.event);
@@ -73,6 +80,7 @@ const Calendar = () => {
           height="100%"
           eventClick={handleEventClick}
           datesSet={handleDatesSet}
+          eventContent={renderEventContent}
           allDaySlot={false}
 
           views={{
