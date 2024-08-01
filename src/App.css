@@ -49,3 +49,25 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Width of the entire scrollbar */
+::-webkit-scrollbar {
+  width: 11px; /* Change this value to your desired width */
+  height: 12px; /* For horizontal scrollbar */
+}
+
+/* Background of the scrollbar track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Change this value to your desired color */
+}
+
+/* Background of the scrollbar handle */
+::-webkit-scrollbar-thumb {
+  background: #888; /* Change this value to your desired color */
+  border-radius: 10px; /* Add rounded corners if you like */
+}
+
+/* Hover effect for the scrollbar handle */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Change this value to your desired color */
+}
