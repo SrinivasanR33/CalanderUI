@@ -15,11 +15,12 @@ const Calendar = () => {
   const [eventDetails, setEventDetails] = useState(null);
 
 
+
   const fetchEventsForDateRange = async (start, end) => {
     const fromDate = start.toISOString().split('T')[0];
     const toDate = end.toISOString().split('T')[0];
     try {
-      const response = await axios.get('/calendar_app/api/calendar', {
+      const response = await axios.get('http://52.35.66.255:8000/calendar_app/api/calendar', {
         params: {
           from_date: fromDate,
           to_date: toDate,
@@ -37,7 +38,7 @@ const Calendar = () => {
 
   const fetchEventDetails = async (eventId) => {
     try {
-      const response = await axios.get('/calendar_app/api/calendar_meeting', {
+      const response = await axios.get('http://52.35.66.255:8000/calendar_app/api/calendar_meeting', {
         params: {
           id: eventId,
         },
