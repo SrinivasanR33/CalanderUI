@@ -1,6 +1,7 @@
-div{
-  --blur-color:#e2e2e2
+div {
+  --blur-color: #e2e2e2
 }
+
 .calendar-container {
   height: 100vh;
   display: flex;
@@ -11,8 +12,10 @@ div{
   border-radius: 10px;
   border: 10px solid #2878c9;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(1000px); /* Add this line */
+  backdrop-filter: blur(1000px);
+  /* Add this line */
 }
+
 .calendar-container-blur {
   height: 100vh;
   display: flex;
@@ -24,34 +27,40 @@ div{
   border-radius: 10px;
   border: 10px solid #2878c9;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(1000px); /* Add this line */
+  backdrop-filter: blur(1000px);
+  /* Add this line */
 }
 
 
 p {
   color: black;
 }
+
 .calendar-insert {
   width: 100%;
   height: 100%;
 }
+
 .calendar-insert-blur {
   width: 100%;
   height: 100%;
-  background:var(--blur-color);
+  background: var(--blur-color);
   /* cursor: none; */
   backdrop-filter: blur(10px);
-  
-  
+
+
 }
-.calendar-insert-blur .fc-theme-standard td, .fc-theme-standard th{
+
+.calendar-insert-blur .fc-theme-standard td,
+.fc-theme-standard th {
   border: 1px solid var(--blur-color);
 }
 
-.calendar-insert-blur .fc-theme-standard .fc-scrollgrid{
+.calendar-insert-blur .fc-theme-standard .fc-scrollgrid {
   border: 1px solid var(--blur-color) !important;
 
 }
+
 .calendar-popup {
   position: fixed;
   top: 50%;
@@ -69,24 +78,30 @@ p {
   font-size: 1.2em;
   color: #333;
 }
+
 .popup_container {
   display: flex;
   border: 1px solid gray;
   padding: 0rem 2rem;
 }
-.iconCantainer{
+
+.iconCantainer {
   display: flex;
   justify-content: space-between;
 }
+
 .iconLabel {
   flex-basis: 100px;
 }
+
 .iconI {
   font-size: 20px;
 }
+
 .iconD {
   font-size: 20px;
 }
+
 .popup-item1 {
   display: flex;
   flex-direction: column;
@@ -94,6 +109,7 @@ p {
   padding-right: 20px;
   border-right: 1px solid gray;
 }
+
 .calendar-popup p {
   margin: 5px 0;
   color: #555;
@@ -105,10 +121,12 @@ p {
   justify-content: center;
   margin: 20px 0;
 }
+
 .calendar-popup-center a:hover {
- background: #0b72b9;
- color: white;
+  background: #0b72b9;
+  color: white;
 }
+
 .calendar-popup-logo {
   width: 250px;
   height: 250px;
@@ -160,7 +178,7 @@ p {
   background: black;
   border: none;
   border-radius: 5px;
-  margin:auto;
+  margin: auto;
   margin-top: 10px;
   cursor: pointer;
   transition: background 0.3s;
@@ -172,48 +190,59 @@ p {
 
 /* calender Style */
 
-.fc .fc-timegrid-slot-label{
+.fc .fc-timegrid-slot-label {
   color: #2878c9;
 }
-.fc-theme-standard td, .fc-theme-standard th{
+
+.fc-theme-standard td,
+.fc-theme-standard th {
   border: 1px solid #f6f7f7;
 }
-.fc-theme-standard .fc-scrollgrid{
+
+.fc-theme-standard .fc-scrollgrid {
   border: 1px solid #f6f7f7 !important;
 
 }
-.fc .fc-toolbar-title{
+
+.fc .fc-toolbar-title {
   color: black;
 }
-.fc .fc-button-group button{
+
+.fc .fc-button-group button {
   background: #ffffff;
   color: #9099a3;
   border: 1px solid #94bce4;
 }
-.fc .fc-button-group button:hover{
+
+.fc .fc-button-group button:hover {
   background: #ffffff;
   color: #9099a3;
   border: 1px solid #94bce4;
 }
+
 /* .fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start{
   background-color: white;
   color: black;
   border-left: 10px solid #2878c9;
 } */
 
-.fc-timegrid-event-harness-inset .fc-timegrid-event, .fc-timegrid-event.fc-event-mirror, .fc-timegrid-more-link{
+.fc-timegrid-event-harness-inset .fc-timegrid-event,
+.fc-timegrid-event.fc-event-mirror,
+.fc-timegrid-more-link {
   background-color: white;
-  border-color:  white !important;
+  border-color: white !important;
   padding: 0px;
   width: 0px;
   margin: 0px;
 
 }
-.event_label{
-padding: 8px;
-cursor: pointer;
+
+.event_label {
+  padding: 8px;
+  cursor: pointer;
 }
-.event_contain{
+
+.event_contain {
   background-color: white;
   color: black;
   width: 220px;
@@ -221,19 +250,22 @@ cursor: pointer;
   border-left: 10px solid #2878c9;
   z-index: 2000;
 }
-.map-list{
+
+.map-list {
   padding-top: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 2rem;
 }
-.map-position{
+
+.map-position {
   position: absolute;
   left: 0px;
   z-index: 3000;
 }
-.event-list{
+
+.event-list {
   background-color: var(--blur-color);
   display: none;
   width: 200px;
@@ -241,11 +273,31 @@ cursor: pointer;
   /* border-left: 10px solid #2878c9; */
   z-index: 2000;
 }
-.event-list-special{
+
+.event-list-special {
   background-color: #2878c9;
-  color:white;
+  color: white;
   width: 226px;
   position: relative;
   /* border-left: 10px solid #2878c9; */
   z-index: 2000;
+}
+
+.event-list-special p {
+  color: white;
+}
+
+.count_contain {
+  position: relative;
+}
+
+.event_count {
+  position: absolute;
+  background-color: rgb(221, 152, 50);
+  border-radius: 50%;
+  padding: 3px 10px;
+  color: black;
+  top: 0px;
+  right: 0px;
+  margin: -10px -10px 0px 0px;
 }

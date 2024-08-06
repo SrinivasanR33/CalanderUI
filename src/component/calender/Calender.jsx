@@ -12,17 +12,18 @@ const Calendar = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [eventDetails, setEventDetails] = useState(null);
-  const [eventList, setEventList] = useState([])
-  const [openEventList, setOpenEventList] = useState(false)
+  const [eventList, setEventList] = useState([]);
+  const [openEventList, setOpenEventList] = useState(false);
 
   // Function to aggregate events by date and return a formatted array
   const aggregateEvents = (events, viewType) => {
     const eventsGrouped = {};
-    console.log(viewType)
+    console.log(viewType);
     events.forEach((event) => {
-      const key = viewType === 'dayGridMonth'
-        ? new Date(event.start).toDateString()
-        : new Date(event.start).toISOString();
+      const key =
+        viewType === "dayGridMonth"
+          ? new Date(event.start).toDateString()
+          : new Date(event.start).toISOString();
 
       if (!eventsGrouped[key]) {
         eventsGrouped[key] = { count: 0, events: [] };
@@ -43,7 +44,6 @@ const Calendar = () => {
       };
     });
   };
-
 
   const fetchEventsForDateRange = async (start, end, type) => {
     const fromDate = start.toISOString().split("T")[0];
@@ -86,65 +86,82 @@ const Calendar = () => {
     const res = event.event.extendedProps;
     return (
       <div>
-        {openEventList && res.count > 1 ?
+        {openEventList && res.count > 1 ? (
           <div className={"event-list-special"}>
-            <div className="event_label">
-              <p> {res.job_id?.jobRequest_Role}</p>
-              {res.count > 1 && (
-                <p className="event_count">+{res.count - 1} more</p>
-              )}
-              <p>
-                <strong>Interviewer:</strong> {res.user_det.handled_by.firstName}{" "}
-                {res.user_det.handled_by.lastName}
-              </p>
-            </div>
-          </div> :
-          <div className={openEventList ? "event-list" : "event_contain"}>
-            <div className="event_label">
-              <p> {res.job_id?.jobRequest_Role}</p>
-              {res.count > 1 && (
-                <p className="event_count">+{res.count - 1} more</p>
-              )}
-              <p>
-                <strong>Interviewer:</strong> {res.user_det.handled_by.firstName}{" "}
-                {res.user_det.handled_by.lastName}
-              </p>
-            </div>
-          </div>}
-        <div className="map-position" >
-          <div className="map-list">
-
-            {eventList?.length > 1 && res.count > 1 && eventList.map((val) => (
-              <div className="event_contain" onClick={()=>handelOpen(val)}  key={val.id}>
-                <div className="event_label">
-                  <p> {val.job_id?.jobRequest_Role}</p>
-                  {val.count > 1 && (
-                    <p className="event_count">+{val.count - 1} more</p>
-                  )}
-                  <p>
-                    <strong>Interviewer:</strong> {val.user_det.handled_by.firstName}{" "}
-                    {val.user_det.handled_by.lastName}
-                  </p>
-                </div>
+            {res.count > 1 && (
+              <div className="count_contain">
+                <p className="event_count">{res.count}</p>
               </div>
-            ))
-            }
+            )}
+            <div className="event_label">
+              <p> {res.job_id?.jobRequest_Role}</p>
+              <p>
+                <strong>Interviewer:</strong>{" "}
+                {res.user_det.handled_by.firstName}{" "}
+                {res.user_det.handled_by.lastName}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className={openEventList ? "event-list" : "event_contain"}>
+            {res.count > 1 && (
+              <div className="count_contain">
+                <p className="event_count">{res.count}</p>
+              </div>
+            )}
+            <div className="event_label">
+              <p> {res.job_id?.jobRequest_Role}</p>
+
+              <p>
+                <strong>Interviewer:</strong>{" "}
+                {res.user_det.handled_by.firstName}{" "}
+                {res.user_det.handled_by.lastName}
+              </p>
+            </div>
+          </div>
+        )}
+        <div className="map-position">
+          <div className="map-list">
+            {eventList?.length > 1 &&
+              res.count > 1 &&
+              eventList.map((val) => (
+                <div
+                  className="event_contain"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent event from propagating to the parent
+                    handelOpen(val);
+                  }}
+                  key={val.id}
+                >
+                  <div className="event_label">
+                    <p> {val.job_id?.jobRequest_Role}</p>
+                    {val.count > 1 && (
+                      <p className="event_count">+{val.count - 1} more</p>
+                    )}
+                    <p>
+                      <strong>Interviewer:</strong>{" "}
+                      {val.user_det.handled_by.firstName}{" "}
+                      {val.user_det.handled_by.lastName}
+                    </p>
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
       </div>
     );
   };
-const handelOpen = (clickInfo)=>{
-  const eventId = clickInfo.event.id;
-  
-  setSelectedEvent(clickInfo.event); // Set the selected event
-  fetchEventDetails(eventId);
-}
+  const handelOpen = (event) => {
+    console.log(event);
+    const eventId = event.id;
+    setSelectedEvent(event); // Set the selected event
+    fetchEventDetails(eventId); // Fetch event details
+  };
   const handleEventClick = (clickInfo) => {
     const eventId = clickInfo.event.id;
     const event = clickInfo.event?.extendedProps;
 
-    console.log(clickInfo, eventId, "hi");
+    // console.log(clickInfo, eventId, "hi");
 
     if (openEventList) {
       // If event list is open, empty the event list
@@ -166,15 +183,20 @@ const handelOpen = (clickInfo)=>{
     }
   };
 
-
   const handleDatesSet = (arg) => {
-    console.log(arg)
+    console.log(arg);
     fetchEventsForDateRange(arg.start, arg.end, arg.view.type);
   };
 
   return (
-    <div className={openEventList ? "calendar-container-blur" : "calendar-container"}>
-      <div className={openEventList ? "calendar-insert-blur" : "calendar-insert"}>
+    <div
+      className={
+        openEventList ? "calendar-container-blur" : "calendar-container"
+      }
+    >
+      <div
+        className={openEventList ? "calendar-insert-blur" : "calendar-insert"}
+      >
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="timeGridWeek"
@@ -189,11 +211,15 @@ const handelOpen = (clickInfo)=>{
               titleFormat: { month: "long", day: "2-digit" },
             },
           }}
-          headerToolbar={{
-            left: "prev,next",
-            center: "title",
-            right: "today dayGridMonth,timeGridWeek,timeGridDay",
-          }}
+          headerToolbar={
+            openEventList
+              ? false // Hide header toolbar when openEventList is true
+              : {
+                  left: "prev,next",
+                  center: "title",
+                  right: "today dayGridMonth,timeGridWeek,timeGridDay",
+                }
+          }
         />
       </div>
 
@@ -207,7 +233,8 @@ const handelOpen = (clickInfo)=>{
                 {eventDetails.user_det.candidate.candidate_lastName}
               </h3>
               <p>
-                <strong>Position:</strong> {eventDetails.job_id?.jobRequest_Role}
+                <strong>Position:</strong>{" "}
+                {eventDetails.job_id?.jobRequest_Role}
               </p>
               <p>
                 <strong>Created By:</strong>{" "}
