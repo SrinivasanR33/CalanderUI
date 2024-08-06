@@ -12,22 +12,27 @@ const Calendar = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [eventDetails, setEventDetails] = useState(null);
+  const [eventList, setEventList] = useState([])
+  const [openEventList, setOpenEventList] = useState(false)
 
   // Function to aggregate events by date and return a formatted array
-  const aggregateEvents = (events) => {
-    const eventsByDate = {};
-
+  const aggregateEvents = (events, viewType) => {
+    const eventsGrouped = {};
+    console.log(viewType)
     events.forEach((event) => {
-      const date = new Date(event.start).toDateString();
-      if (!eventsByDate[date]) {
-        eventsByDate[date] = { count: 0, events: [] };
+      const key = viewType === 'dayGridMonth'
+        ? new Date(event.start).toDateString()
+        : new Date(event.start).toISOString();
+
+      if (!eventsGrouped[key]) {
+        eventsGrouped[key] = { count: 0, events: [] };
       }
-      eventsByDate[date].count += 1;
-      eventsByDate[date].events.push(event);
+      eventsGrouped[key].count += 1;
+      eventsGrouped[key].events.push(event);
     });
 
-    return Object.keys(eventsByDate).map((date) => {
-      const { count, events } = eventsByDate[date];
+    return Object.keys(eventsGrouped).map((key) => {
+      const { count, events } = eventsGrouped[key];
       return {
         ...events[0], // Take the first event
         extendedProps: {
@@ -39,7 +44,8 @@ const Calendar = () => {
     });
   };
 
-  const fetchEventsForDateRange = async (start, end) => {
+
+  const fetchEventsForDateRange = async (start, end, type) => {
     const fromDate = start.toISOString().split("T")[0];
     const toDate = end.toISOString().split("T")[0];
     try {
@@ -53,7 +59,7 @@ const Calendar = () => {
         }
       );
       const data = response.data;
-      const aggregatedEvents = aggregateEvents(data);
+      const aggregatedEvents = aggregateEvents(data, type);
       setEvents(aggregatedEvents);
     } catch (error) {
       console.error("Error fetching events:", error);
@@ -79,34 +85,96 @@ const Calendar = () => {
   const renderEventContent = (event) => {
     const res = event.event.extendedProps;
     return (
-      <div className="event_contain">
-        <div className="event_label">
-          <p> {res.job_id.jobRequest_Role}</p>
-          {res.count > 1 && (
-            <p className="event_count">+{res.count - 1} more</p>
-          )}
-          <p>
-            <strong>Interviewer:</strong> {res.user_det.handled_by.firstName}{" "}
-            {res.user_det.handled_by.lastName}
-          </p>
+      <div>
+        {openEventList && res.count > 1 ?
+          <div className={"event-list-special"}>
+            <div className="event_label">
+              <p> {res.job_id?.jobRequest_Role}</p>
+              {res.count > 1 && (
+                <p className="event_count">+{res.count - 1} more</p>
+              )}
+              <p>
+                <strong>Interviewer:</strong> {res.user_det.handled_by.firstName}{" "}
+                {res.user_det.handled_by.lastName}
+              </p>
+            </div>
+          </div> :
+          <div className={openEventList ? "event-list" : "event_contain"}>
+            <div className="event_label">
+              <p> {res.job_id?.jobRequest_Role}</p>
+              {res.count > 1 && (
+                <p className="event_count">+{res.count - 1} more</p>
+              )}
+              <p>
+                <strong>Interviewer:</strong> {res.user_det.handled_by.firstName}{" "}
+                {res.user_det.handled_by.lastName}
+              </p>
+            </div>
+          </div>}
+        <div className="map-position" >
+          <div className="map-list">
+
+            {eventList?.length > 1 && res.count > 1 && eventList.map((val) => (
+              <div className="event_contain" onClick={()=>handelOpen(val)}  key={val.id}>
+                <div className="event_label">
+                  <p> {val.job_id?.jobRequest_Role}</p>
+                  {val.count > 1 && (
+                    <p className="event_count">+{val.count - 1} more</p>
+                  )}
+                  <p>
+                    <strong>Interviewer:</strong> {val.user_det.handled_by.firstName}{" "}
+                    {val.user_det.handled_by.lastName}
+                  </p>
+                </div>
+              </div>
+            ))
+            }
+          </div>
         </div>
       </div>
     );
   };
-
+const handelOpen = (clickInfo)=>{
+  const eventId = clickInfo.event.id;
+  
+  setSelectedEvent(clickInfo.event); // Set the selected event
+  fetchEventDetails(eventId);
+}
   const handleEventClick = (clickInfo) => {
     const eventId = clickInfo.event.id;
-    setSelectedEvent(clickInfo.event);
-    fetchEventDetails(eventId);
+    const event = clickInfo.event?.extendedProps;
+
+    console.log(clickInfo, eventId, "hi");
+
+    if (openEventList) {
+      // If event list is open, empty the event list
+      setEventList([]);
+      setOpenEventList(false); // Toggle the event list visibility
+    }
+
+    if (!openEventList && event?.count > 1) {
+      setOpenEventList(!openEventList); // Toggle the event list visibility
+      setEventList(event.events || []); // Update event list
+      setSelectedEvent(null); // Set to null or false as needed
+    } else {
+      if (event?.count === 1) {
+        setOpenEventList(false); // Close the event list
+        setEventList([]); // Clear the event list
+        setSelectedEvent(clickInfo.event); // Set the selected event
+        fetchEventDetails(eventId);
+      } // Fetch event details
+    }
   };
 
+
   const handleDatesSet = (arg) => {
-    fetchEventsForDateRange(arg.start, arg.end);
+    console.log(arg)
+    fetchEventsForDateRange(arg.start, arg.end, arg.view.type);
   };
 
   return (
-    <div className="calendar-container">
-      <div className="calendar-insert">
+    <div className={openEventList ? "calendar-container-blur" : "calendar-container"}>
+      <div className={openEventList ? "calendar-insert-blur" : "calendar-insert"}>
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="timeGridWeek"
@@ -128,6 +196,7 @@ const Calendar = () => {
           }}
         />
       </div>
+
       {selectedEvent && eventDetails && (
         <div className="calendar-popup">
           <div className="popup_container">
@@ -138,7 +207,7 @@ const Calendar = () => {
                 {eventDetails.user_det.candidate.candidate_lastName}
               </h3>
               <p>
-                <strong>Position:</strong> {eventDetails.job_id.jobRequest_Role}
+                <strong>Position:</strong> {eventDetails.job_id?.jobRequest_Role}
               </p>
               <p>
                 <strong>Created By:</strong>{" "}

@@ -1,3 +1,6 @@
+div{
+  --blur-color:#e2e2e2
+}
 .calendar-container {
   height: 100vh;
   display: flex;
@@ -8,7 +11,23 @@
   border-radius: 10px;
   border: 10px solid #2878c9;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1000px); /* Add this line */
 }
+.calendar-container-blur {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: #7e8183;
+  color: #555;
+  border-radius: 10px;
+  border: 10px solid #2878c9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1000px); /* Add this line */
+}
+
+
 p {
   color: black;
 }
@@ -16,7 +35,23 @@ p {
   width: 100%;
   height: 100%;
 }
+.calendar-insert-blur {
+  width: 100%;
+  height: 100%;
+  background:var(--blur-color);
+  /* cursor: none; */
+  backdrop-filter: blur(10px);
+  
+  
+}
+.calendar-insert-blur .fc-theme-standard td, .fc-theme-standard th{
+  border: 1px solid var(--blur-color);
+}
 
+.calendar-insert-blur .fc-theme-standard .fc-scrollgrid{
+  border: 1px solid var(--blur-color) !important;
+
+}
 .calendar-popup {
   position: fixed;
   top: 50%;
@@ -181,6 +216,36 @@ cursor: pointer;
 .event_contain{
   background-color: white;
   color: black;
-  width: 265px;
+  width: 220px;
+  position: relative;
   border-left: 10px solid #2878c9;
+  z-index: 2000;
+}
+.map-list{
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+}
+.map-position{
+  position: absolute;
+  left: 0px;
+  z-index: 3000;
+}
+.event-list{
+  background-color: var(--blur-color);
+  display: none;
+  width: 200px;
+  position: relative;
+  /* border-left: 10px solid #2878c9; */
+  z-index: 2000;
+}
+.event-list-special{
+  background-color: #2878c9;
+  color:white;
+  width: 226px;
+  position: relative;
+  /* border-left: 10px solid #2878c9; */
+  z-index: 2000;
 }
